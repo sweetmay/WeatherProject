@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">WeatherProject</string>
+    <string name="pressure">Pressure</string>
+    <string name="wind">Wind</string>
+    <string name="forecast">Forecast</string>
+    <string name="city">City</string>
+    <string-array name="cities">
+        <item>Москва</item>
+        <item>Санкт-Петербург</item>
+        <item>Новосибирск</item>
+        <item>Екатеринбург</item>
+    </string-array>
 </resources>
