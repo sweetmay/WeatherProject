@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="citySelect" type="id" />
+    <item name="checkBoxPressure" type="id"/>
+    <item name="checkBoxWind" type="id"/>
+    <item name="editTextCity" type="id"/>
+    <item name="forecast" type="id"/>
+    <item name="temperature" type="id" />
+</resources>
