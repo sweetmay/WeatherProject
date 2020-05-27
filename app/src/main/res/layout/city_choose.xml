@@ -7,7 +7,7 @@
     tools:context=".MainActivity" >
 
     <CheckBox
-        android:id="@id/checkBoxWind"
+        android:id="@+id/checkBoxWind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/wind"
@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="@+id/checkBoxPressure" />
 
     <CheckBox
-        android:id="@id/checkBoxPressure"
+        android:id="@+id/checkBoxPressure"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pressure"
@@ -26,7 +26,7 @@
         app:layout_constraintVertical_bias="0.531" />
 
     <ListView
-        android:id="@id/citySelect"
+        android:id="@+id/citySelect"
         android:layout_width="295dp"
         android:layout_height="226dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +36,7 @@
         app:layout_constraintVertical_bias="0.499" />
 
     <EditText
-        android:id="@id/editTextCity"
+        android:id="@+id/editTextCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -48,7 +48,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@id/forecast"
+        android:id="@+id/forecast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/forecast"

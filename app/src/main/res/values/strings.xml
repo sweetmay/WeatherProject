@@ -4,10 +4,21 @@
     <string name="wind">Wind</string>
     <string name="forecast">Forecast</string>
     <string name="city">City</string>
+    <string name="city_key">cityKey</string>
+    <string name="pressure_key">pressureKey</string>
+    <string name="wind_key">windKey</string>
+    <string name="city_info">City Info</string>
     <string-array name="cities">
-        <item>Москва</item>
-        <item>Санкт-Петербург</item>
-        <item>Новосибирск</item>
-        <item>Екатеринбург</item>
+        <item>Moscow</item>
+        <item>Saint Petersburg</item>
+        <item>Novosibirsk</item>
+        <item>Yekaterinburg</item>
+        <item>Nizhny Novgorod</item>
+        <item>Kazan</item>
+        <item>Chelyabinsk</item>
+        <item>Omsk</item>
+        <item>Samara</item>
+        <item>Rostov-on-Don</item>
+
     </string-array>
 </resources>
