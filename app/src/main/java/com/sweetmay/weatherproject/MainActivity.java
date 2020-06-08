@@ -1,8 +1,12 @@
 package com.sweetmay.weatherproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,18 +14,21 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity {
+import com.squareup.otto.Subscribe;
+
+public class MainActivity extends AppCompatActivity implements RVOnItemClick {
     public static String cityKey;
     public static String pressureKey;
     public static String windKey;
-
-    ListView cities;
-    EditText cityInput;
-    Button forecastBtn;
-    CheckBox pressure;
-    CheckBox wind;
+    RecyclerDataAdapter adapter;
+    private Fragment weatherFragment;
+    private EditText cityInput;
+    private RecyclerView cities;
+    private CheckBox pressure;
+    private CheckBox wind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,38 +37,41 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         initKeys();
         cities.setVisibility(View.GONE);
-        setListView();
         showCitiesList();
-        chooseCityFromList();
-        setOnClickListenerForecastBtn();
-
-
     }
 
-    private void setOnClickListenerForecastBtn() {
-        forecastBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainPresenter.getInstance().setCity(cityInput.getText().toString());
-
-                Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
-                intent.putExtra(cityKey, MainPresenter.getInstance().getCity());
-                intent.putExtra(pressureKey, pressure.isChecked());
-                intent.putExtra(windKey, wind.isChecked());
-                startActivity(intent);
-            }
-        });
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getBus().register(this);
     }
 
-    private void chooseCityFromList() {
-        cities.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String[] str = getResources().getStringArray(R.array.cities);
-                cityInput.setText(str[position]);
-            }
-        });
+    @Override
+    protected void onStop() {
+        EventBus.getBus().unregister(this);
+        super.onStop();
     }
+
+//    private void setOnClickListenerForecastBtn() {
+//        getForecastBtn().setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+//                    EventBus.getBus().post(new ForecastEvent(cityInput.getText().toString(),
+//                            wind.isChecked(), pressure.isChecked()));
+//                }else{
+//                    MainPresenter.getInstance().setCity(cityInput.getText().toString());
+//
+//                    Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
+//                    intent.putExtra(cityKey, MainPresenter.getInstance().getCity());
+//                    intent.putExtra(pressureKey, pressure.isChecked());
+//                    intent.putExtra(windKey, wind.isChecked());
+//                    startActivity(intent);
+//                }
+//            }
+//        });
+//    }
+
 
     private void showCitiesList() {
         cityInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -78,20 +88,40 @@ public class MainActivity extends AppCompatActivity {
         cityKey = getResources().getString(R.string.city_key);
     }
 
-    private void setListView() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.cities,
-                android.R.layout.simple_list_item_1);
+
+    private void initViews(){
+        weatherFragment = getSupportFragmentManager().findFragmentById(R.id.weatherFragment);
+        cities = findViewById((R.id.cityRecyclerView));
+        cityInput = findViewById((R.id.editTextCity));
+        pressure = findViewById((R.id.checkBoxPressure));
+        wind = findViewById((R.id.checkBoxWind));
+        setUpRV();
+    }
+
+    private void setUpRV() {
+        String[] strings = getResources().getStringArray(R.array.cities);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getBaseContext());
+        adapter = new RecyclerDataAdapter(strings, this);
+        cities.setLayoutManager(layoutManager);
         cities.setAdapter(adapter);
     }
 
 
-    private void initViews(){
-        cities = findViewById((R.id.citySelect));
-        cityInput = findViewById((R.id.editTextCity));
-        forecastBtn = findViewById(R.id.forecast);
-        pressure = findViewById((R.id.checkBoxPressure));
-        wind = findViewById((R.id.checkBoxWind));
-
+    @Override
+    public void onItemClick(String text) {
+        MainPresenter.getInstance().setCity(text);
+        cityInput.setText(MainPresenter.getInstance().getCity());
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    EventBus.getBus().post(new ForecastEvent(cityInput.getText().toString(),
+                            wind.isChecked(), pressure.isChecked()));
+                }else{
+                    MainPresenter.getInstance().setCity(cityInput.getText().toString());
+                    Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
+                    intent.putExtra(cityKey, MainPresenter.getInstance().getCity());
+                    intent.putExtra(pressureKey, pressure.isChecked());
+                    intent.putExtra(windKey, wind.isChecked());
+                    startActivity(intent);
+                }
+            }
     }
 
-}

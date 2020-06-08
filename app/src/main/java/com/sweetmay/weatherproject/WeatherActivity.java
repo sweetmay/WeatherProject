@@ -46,9 +46,8 @@ public class WeatherActivity extends AppCompatActivity {
         Intent intent = getIntent();
         boolean isPressure = intent.getBooleanExtra(MainActivity.pressureKey, false);
         boolean isWind = intent.getBooleanExtra(MainActivity.windKey, false);
-        System.out.println(isPressure);
-        System.out.println(isWind);
-
+        city.setText(intent.getStringExtra(MainActivity.cityKey));
+        System.out.println(intent.getStringExtra(MainActivity.cityKey));
         if(isPressure){
             pressure.setVisibility(View.VISIBLE);
         }else {
@@ -60,9 +59,6 @@ public class WeatherActivity extends AppCompatActivity {
         }else {
             wind.setVisibility(View.GONE);
         }
-
-        city.setText(intent.getStringExtra(MainActivity.cityKey));
-
 
     }
 
