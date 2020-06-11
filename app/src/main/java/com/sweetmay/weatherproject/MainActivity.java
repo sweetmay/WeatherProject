@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.otto.Subscribe;
 
 public class MainActivity extends AppCompatActivity implements RVOnItemClick {
@@ -25,7 +27,8 @@ public class MainActivity extends AppCompatActivity implements RVOnItemClick {
     public static String windKey;
     RecyclerDataAdapter adapter;
     private Fragment weatherFragment;
-    private EditText cityInput;
+    private TextInputLayout cityInputLayout;
+    private TextInputEditText cityInput;
     private RecyclerView cities;
     private CheckBox pressure;
     private CheckBox wind;
@@ -51,27 +54,7 @@ public class MainActivity extends AppCompatActivity implements RVOnItemClick {
         EventBus.getBus().unregister(this);
         super.onStop();
     }
-
-//    private void setOnClickListenerForecastBtn() {
-//        getForecastBtn().setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-//                    EventBus.getBus().post(new ForecastEvent(cityInput.getText().toString(),
-//                            wind.isChecked(), pressure.isChecked()));
-//                }else{
-//                    MainPresenter.getInstance().setCity(cityInput.getText().toString());
-//
-//                    Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
-//                    intent.putExtra(cityKey, MainPresenter.getInstance().getCity());
-//                    intent.putExtra(pressureKey, pressure.isChecked());
-//                    intent.putExtra(windKey, wind.isChecked());
-//                    startActivity(intent);
-//                }
-//            }
-//        });
-//    }
-
+    
 
     private void showCitiesList() {
         cityInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -92,7 +75,8 @@ public class MainActivity extends AppCompatActivity implements RVOnItemClick {
     private void initViews(){
         weatherFragment = getSupportFragmentManager().findFragmentById(R.id.weatherFragment);
         cities = findViewById((R.id.cityRecyclerView));
-        cityInput = findViewById((R.id.editTextCity));
+        cityInputLayout = findViewById((R.id.editTextCity));
+        cityInput = cityInputLayout.findViewById(R.id.inputCity);
         pressure = findViewById((R.id.checkBoxPressure));
         wind = findViewById((R.id.checkBoxWind));
         setUpRV();
@@ -116,7 +100,8 @@ public class MainActivity extends AppCompatActivity implements RVOnItemClick {
                             wind.isChecked(), pressure.isChecked()));
                 }else{
                     MainPresenter.getInstance().setCity(cityInput.getText().toString());
-                    Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
+                    Intent intent = new Intent(MainActivity.this,
+                            WeatherActivity.class);
                     intent.putExtra(cityKey, MainPresenter.getInstance().getCity());
                     intent.putExtra(pressureKey, pressure.isChecked());
                     intent.putExtra(windKey, wind.isChecked());

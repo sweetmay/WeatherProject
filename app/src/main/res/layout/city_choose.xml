@@ -7,6 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cityRecyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkBoxWind"
+        app:layout_constraintStart_toStartOf="@+id/editTextCity"
+        app:layout_constraintTop_toBottomOf="@+id/editTextCity" />
+
     <CheckBox
         android:id="@+id/checkBoxWind"
         android:layout_width="wrap_content"
@@ -19,31 +29,35 @@
         android:id="@+id/checkBoxPressure"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
         android:text="@string/pressure"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.531" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cityRecyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/checkBoxWind"
-        app:layout_constraintStart_toStartOf="@+id/editTextCity"
-        app:layout_constraintTop_toBottomOf="@+id/editTextCity" />
-
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextCity"
-        android:layout_width="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/city"
-        android:inputType="textUri"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/city"
+            android:inputType="text"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

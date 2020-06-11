@@ -16,13 +16,16 @@ import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class WeatherActivityFragment extends Fragment {
     private TextView city;
     private TextView wind;
     private TextView pressure;
     private Button cityInfo;
-
+    private TextView temperature;
 
     public WeatherActivityFragment() {
     }
@@ -49,8 +52,13 @@ public class WeatherActivityFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initViews();
+    }
+
+    private void initViews() {
         city = getView().findViewById(R.id.cityViewFragment);
         wind = getView().findViewById(R.id.windView);
+        temperature = getView().findViewById(R.id.temperature);
         pressure = getView().findViewById(R.id.pressureView);
         cityInfo = getView().findViewById(R.id.goToWikiBtn);
         wind.setVisibility(View.GONE);
@@ -86,7 +94,7 @@ public class WeatherActivityFragment extends Fragment {
     }
 
     @Subscribe
-    public void onForecastEvent(ForecastEvent event){
+    public void onForecastEvent(ForecastEvent event) throws JSONException {
         wind.setVisibility(View.GONE);
         pressure.setVisibility(View.GONE);
         city.setText(event.getCity());
@@ -95,6 +103,11 @@ public class WeatherActivityFragment extends Fragment {
         }
         if(event.isWind()){
             wind.setVisibility(View.VISIBLE);
+        }
+        JSONObject object = GetWeatherData.getJson((String) event.getCity());
+        if(object != null){
+            JSONObject main = object.getJSONObject("main");
+            temperature.setText(main.getString("temp"));
         }
     }
 }
