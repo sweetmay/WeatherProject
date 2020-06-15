@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragmentContainer2"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
+    android:orientation="horizontal">
+
+    <fragment
+        android:layout_weight="1"
+        android:id="@+id/cityChooseFragment"
+        android:name="com.sweetmay.weatherproject.CityChooseFragment"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        tools:layout="@layout/city_choose_fragment"/>
+
+
+    <fragment
+        android:layout_weight="1"
+        android:id="@+id/weatherFragment"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:name="com.sweetmay.weatherproject.WeatherFragment"
+        tools:layout="@layout/weather_fragment"/>
+
+
+</LinearLayout>
+

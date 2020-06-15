@@ -1,52 +1,39 @@
 package com.sweetmay.weatherproject;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.navigation.NavigationView;
 import com.squareup.otto.Subscribe;
 
-public class MainActivity extends AppCompatActivity implements RVOnItemClick {
-    public static String cityKey;
-    public static String pressureKey;
-    public static String windKey;
-    RecyclerDataAdapter adapter;
-    private Fragment weatherFragment;
-    private TextInputLayout cityInputLayout;
-    private TextInputEditText cityInput;
-    private RecyclerView cities;
-    private CheckBox pressure;
-    private CheckBox wind;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.city_choose);
-        initViews();
-        initKeys();
-        cities.setVisibility(View.GONE);
-        showCitiesList();
-    }
+public class MainActivity extends AppCompatActivity {
+    WeatherFragment weatherFragment;
+    CityChooseFragment cityChooseFragment;
+    Toolbar toolbar;
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    AppBarConfiguration appBarConfiguration;
+    NavController navController;
+    boolean onForecast;
 
     @Override
     protected void onStart() {
-        super.onStart();
         EventBus.getBus().register(this);
+        super.onStart();
     }
 
     @Override
@@ -54,59 +41,41 @@ public class MainActivity extends AppCompatActivity implements RVOnItemClick {
         EventBus.getBus().unregister(this);
         super.onStop();
     }
-    
-
-    private void showCitiesList() {
-        cityInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                cities.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    private void initKeys() {
-        pressureKey = getResources().getString(R.string.pressure_key);
-        windKey = getResources().getString(R.string.wind_key);
-        cityKey = getResources().getString(R.string.city_key);
-    }
-
-
-    private void initViews(){
-        weatherFragment = getSupportFragmentManager().findFragmentById(R.id.weatherFragment);
-        cities = findViewById((R.id.cityRecyclerView));
-        cityInputLayout = findViewById((R.id.editTextCity));
-        cityInput = cityInputLayout.findViewById(R.id.inputCity);
-        pressure = findViewById((R.id.checkBoxPressure));
-        wind = findViewById((R.id.checkBoxWind));
-        setUpRV();
-    }
-
-    private void setUpRV() {
-        String[] strings = getResources().getStringArray(R.array.cities);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getBaseContext());
-        adapter = new RecyclerDataAdapter(strings, this);
-        cities.setLayoutManager(layoutManager);
-        cities.setAdapter(adapter);
-    }
-
 
     @Override
-    public void onItemClick(String text) {
-        MainPresenter.getInstance().setCity(text);
-        cityInput.setText(MainPresenter.getInstance().getCity());
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                    EventBus.getBus().post(new ForecastEvent(cityInput.getText().toString(),
-                            wind.isChecked(), pressure.isChecked()));
-                }else{
-                    MainPresenter.getInstance().setCity(cityInput.getText().toString());
-                    Intent intent = new Intent(MainActivity.this,
-                            WeatherActivity.class);
-                    intent.putExtra(cityKey, MainPresenter.getInstance().getCity());
-                    intent.putExtra(pressureKey, pressure.isChecked());
-                    intent.putExtra(windKey, wind.isChecked());
-                    startActivity(intent);
-                }
-            }
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_activity);
+        initViews();
+        setSupportActionBar(toolbar);
+        appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_city, R.id.nav_weather, R.id.nav_settings).
+                setDrawerLayout(drawerLayout).build();
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
     }
+
+    private void initViews() {
+        weatherFragment = new WeatherFragment();
+        toolbar = findViewById(R.id.toolbar);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+    @Subscribe
+    public void onForecastEvent(ForecastEvent event){
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+
+        }else {
+            navController.navigate(R.id.nav_weather);
+        }
+    }
+}
 
