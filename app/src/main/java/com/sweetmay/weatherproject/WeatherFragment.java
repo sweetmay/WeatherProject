@@ -1,5 +1,7 @@
 package com.sweetmay.weatherproject;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +39,7 @@ public class WeatherFragment extends Fragment {
     private ContentLoadingProgressBar loading;
     private DecimalFormat format = new DecimalFormat("#.##");
     private ImageView weatherEmoji;
+    private AlertDialog alertWeatherDataIncorrect;
 
     public WeatherFragment() {
     }
@@ -90,6 +93,19 @@ public class WeatherFragment extends Fragment {
         cityInfo = getView().findViewById(R.id.goToWikiBtn);
         wind.setVisibility(View.GONE);
         pressure.setVisibility(View.GONE);
+        initAlertDialog();
+    }
+
+    private void initAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.place_not_found)
+                .setPositiveButton(R.string.alert_button_change_city, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        EventBus.getBus().post(new OnErrorEvent(true));
+                    }
+                });
+        alertWeatherDataIncorrect = builder.create();
     }
 
     @Override
@@ -142,8 +158,7 @@ public class WeatherFragment extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getActivity().getApplicationContext(),
-                                    R.string.place_not_found, Toast.LENGTH_LONG).show();
+                            alertWeatherDataIncorrect.show();
                         }
                     });
                 }else {

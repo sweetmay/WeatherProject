@@ -1,10 +1,13 @@
 package com.sweetmay.weatherproject;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,12 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Objects;
+
 public class CityChooseFragment extends Fragment implements RVOnItemClick{
     public static String cityKey;
     public static String pressureKey;
     public static String windKey;
-    RecyclerDataAdapter adapter;
-    private Fragment weatherFragment;
+    private RecyclerDataAdapter adapter;
     private TextInputLayout cityInputLayout;
     private TextInputEditText cityInput;
     private RecyclerView cities;
@@ -57,6 +61,20 @@ public class CityChooseFragment extends Fragment implements RVOnItemClick{
         initKeys();
         cities.setVisibility(View.GONE);
         showCitiesList();
+        onEnterClick();
+    }
+
+    private void onEnterClick() {
+        cityInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_SEND){
+                    onForecast(Objects.requireNonNull(cityInput.getText()).toString());
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void showCitiesList() {
@@ -95,6 +113,10 @@ public class CityChooseFragment extends Fragment implements RVOnItemClick{
 
     @Override
     public void onItemClick(String text) {
+        onForecast(text);
+    }
+
+    private void onForecast(String text) {
         MainPresenter.getInstance().setCity(text);
         MainPresenter.getInstance().setPressure(pressure.isChecked());
         MainPresenter.getInstance().setWind(wind.isChecked());

@@ -11,6 +11,7 @@ public class ForecastEvent {
         ForecastEvent.isPressure = isPressure;
     }
 
+
     public ForecastEvent(String city){
         ForecastEvent.city = city;
         isWind = MainPresenter.getInstance().isWind();

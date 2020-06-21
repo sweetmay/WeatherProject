@@ -32,7 +32,12 @@ public class GetWeatherData {
                 SB.append(tempStr);
                 tempStr = reader.readLine();
             }
-            return new JSONObject(SB.toString());
+            JSONObject jsonObject = new JSONObject(SB.toString());
+            if(jsonObject.getString("cod").equals("200")){
+            return jsonObject;
+            }else {
+                throw new Exception();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -1,19 +1,14 @@
 package com.sweetmay.weatherproject;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -21,14 +16,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.squareup.otto.Subscribe;
 
 public class MainActivity extends AppCompatActivity {
-    WeatherFragment weatherFragment;
-    CityChooseFragment cityChooseFragment;
-    Toolbar toolbar;
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    AppBarConfiguration appBarConfiguration;
-    NavController navController;
-    boolean onForecast;
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private AppBarConfiguration appBarConfiguration;
+    private NavController navController;
 
     @Override
     protected void onStart() {
@@ -57,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        weatherFragment = new WeatherFragment();
         toolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
@@ -72,10 +63,15 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onForecastEvent(ForecastEvent event){
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-
+            //обработать горизонтальную ориентацию
         }else {
             navController.navigate(R.id.nav_weather);
-        }
+            }
+    }
+
+    @Subscribe
+    public void onErrorEvent(OnErrorEvent event){
+        navController.navigate(R.id.nav_city);
     }
 }
 

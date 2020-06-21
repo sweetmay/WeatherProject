@@ -28,4 +28,5 @@
     <string name="select_a_city_in_the_list">Select a city in the list</string>
     <string name="city_menu">Choose city</string>
     <string name="weather_menu">Weather screen</string>
+    <string name="alert_button_change_city">Try another location</string>
 </resources>
