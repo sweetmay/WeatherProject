@@ -1,13 +1,17 @@
 package com.sweetmay.weatherproject;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 
@@ -20,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.squareup.otto.Subscribe;
 
 import org.json.JSONArray;
@@ -81,6 +87,8 @@ public class WeatherFragment extends Fragment {
             city.setText(MainPresenter.getInstance().getCity());
         }
     }
+
+
 
     private void initViews() {
         loading = getView().findViewById(R.id.loading);

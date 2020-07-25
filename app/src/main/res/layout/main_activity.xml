@@ -19,6 +19,8 @@
         android:layout_gravity="start"
         android:clipToPadding="false"
         app:menu="@menu/main_menu"
-        />
+        app:headerLayout="@layout/nav_view_header"
+        >
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

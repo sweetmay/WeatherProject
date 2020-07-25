@@ -62,11 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe
     public void onForecastEvent(ForecastEvent event){
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            //обработать горизонтальную ориентацию
-        }else {
-            navController.navigate(R.id.nav_weather);
-            }
+        navController.navigate(R.id.nav_weather);
     }
 
     @Subscribe
