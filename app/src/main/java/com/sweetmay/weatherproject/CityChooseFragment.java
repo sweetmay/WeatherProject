@@ -28,8 +28,6 @@ public class CityChooseFragment extends Fragment implements RVOnItemClick{
     private TextInputLayout cityInputLayout;
     private TextInputEditText cityInput;
     private RecyclerView cities;
-    private CheckBox pressure;
-    private CheckBox wind;
 
     public CityChooseFragment(){
     }
@@ -97,8 +95,6 @@ public class CityChooseFragment extends Fragment implements RVOnItemClick{
         cities = getView().findViewById((R.id.cityRecyclerView));
         cityInputLayout = getView().findViewById((R.id.editTextCity));
         cityInput = cityInputLayout.findViewById(R.id.inputCity);
-        pressure = getView().findViewById((R.id.checkBoxPressure));
-        wind = getView().findViewById((R.id.checkBoxWind));
         setUpRV();
     }
 
@@ -118,10 +114,10 @@ public class CityChooseFragment extends Fragment implements RVOnItemClick{
 
     private void onForecast(String text) {
         MainPresenter.getInstance().setCity(text);
-        MainPresenter.getInstance().setPressure(pressure.isChecked());
-        MainPresenter.getInstance().setWind(wind.isChecked());
+        MainPresenter.getInstance().setPressure(true);
+        MainPresenter.getInstance().setWind(true);
         cityInput.setText(MainPresenter.getInstance().getCity());
         EventBus.getBus().post(new ForecastEvent(cityInput.getText().toString(),
-                wind.isChecked(), pressure.isChecked()));
+                true, true));
     }
 }

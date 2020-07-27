@@ -7,19 +7,6 @@
     <string name="pressure_key">pressureKey</string>
     <string name="wind_key">windKey</string>
     <string name="city_info">City Info</string>
-    <string-array name="cities">
-        <item>Moscow</item>
-        <item>Saint Petersburg</item>
-        <item>Novosibirsk</item>
-        <item>Yekaterinburg</item>
-        <item>Nizhny Novgorod</item>
-        <item>Kazan</item>
-        <item>Chelyabinsk</item>
-        <item>Omsk</item>
-        <item>Samara</item>
-        <item>Rostov-on-Don</item>
-
-    </string-array>
     <string name="navigation_drawer_open">Drawer Open</string>
     <string name="navigation_drawer_close">Drawer Closed</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -32,4 +19,21 @@
     <string name="weather">Weather</string>
     <string name="settings">Settings</string>
     <string name="weather_app">Weather App</string>
+    <string name="alert_permission_title">Location permission</string>
+    <string name="alert_permission_message">The app requires your location data to show weather, however you can choose your location manually</string>
+    <string name="alert_button_accept">Accept</string>
+    <string name="alert_button_dismiss">Choose manually</string>
+
+    <string-array name="cities">
+        <item>Moscow</item>
+        <item>Saint Petersburg</item>
+        <item>Novosibirsk</item>
+        <item>Yekaterinburg</item>
+        <item>Nizhny Novgorod</item>
+        <item>Kazan</item>
+        <item>Chelyabinsk</item>
+        <item>Omsk</item>
+        <item>Samara</item>
+        <item>Rostov-on-Don</item>
+    </string-array>
 </resources>
