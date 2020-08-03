@@ -3,9 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:background="@color/design_default_color_background">
+
+    <com.sweetmay.weatherproject.SunriseView
+        android:id="@+id/sunriseView"
+        android:layout_width="262dp"
+        android:layout_height="223dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/temperature"
@@ -22,6 +32,7 @@
         android:id="@+id/cityViewFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
         android:text="@string/select_a_city_in_the_list"
         android:textAlignment="center"
         android:textSize="24sp"

@@ -46,7 +46,7 @@ public class WeatherFragment extends Fragment {
     private DecimalFormat format = new DecimalFormat("#.##");
     private ImageView weatherEmoji;
     private AlertDialog alertWeatherDataIncorrect;
-
+    private SunriseView sunriseView;
     public WeatherFragment() {
     }
 
@@ -92,6 +92,7 @@ public class WeatherFragment extends Fragment {
 
     private void initViews() {
         loading = getView().findViewById(R.id.loading);
+        sunriseView = getView().findViewById(R.id.sunriseView);
         loading.hide();
         weatherEmoji = getView().findViewById(R.id.weatherEmoji);
         city = getView().findViewById(R.id.cityViewFragment);
@@ -186,10 +187,12 @@ public class WeatherFragment extends Fragment {
             JSONArray weather = jsonObject.getJSONArray("weather");
             JSONObject main = jsonObject.getJSONObject("main");
             JSONObject JSONwind = jsonObject.getJSONObject("wind");
+            JSONObject sys = jsonObject.getJSONObject("sys");
 
             String[] strArr = getData(main, JSONwind, weather);
             getPNG(weather);
 
+            sunriseView.setSunrise_Sunset(sys.getLong("sunrise"), sys.getLong("sunset"), jsonObject.getLong("dt"));
             temperature.setText(strArr[0]);
             pressure.setText(strArr[1]);
             wind.setText(strArr[2]);
