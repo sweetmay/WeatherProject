@@ -15,6 +15,7 @@ class MainPresenter {
         pressure = false;
     }
 
+
     String getCity() {
         return city;
     }

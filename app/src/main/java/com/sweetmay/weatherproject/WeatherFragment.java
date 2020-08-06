@@ -1,38 +1,34 @@
 package com.sweetmay.weatherproject;
 
-import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.LocationManager;
+import android.content.ServiceConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.squareup.otto.Subscribe;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.sweetmay.weatherproject.requestweather.RequestWeather;
 
 import java.text.DecimalFormat;
+
+import retrofit2.Response;
 
 
 public class WeatherFragment extends Fragment {
@@ -47,12 +43,16 @@ public class WeatherFragment extends Fragment {
     private ImageView weatherEmoji;
     private AlertDialog alertWeatherDataIncorrect;
     private SunriseView sunriseView;
+    private UpdaterService.ServiceBinder updaterServiceBinder;
+    private UpdaterService updaterService;
+    private boolean isBound = false;
     public WeatherFragment() {
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
         EventBus.getBus().register(this);
         openCityInfo();
     }
@@ -66,6 +66,8 @@ public class WeatherFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = new Intent(getContext(), UpdaterService.class);
+        getActivity().bindService(intent, updaterServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -144,7 +146,7 @@ public class WeatherFragment extends Fragment {
     }
 
     @Subscribe
-    public void onForecastEvent(ForecastEvent event) throws JSONException {
+    public void onForecastEvent(ForecastEvent event){
         wind.setVisibility(View.GONE);
         pressure.setVisibility(View.GONE);
         if(event.isPressure()){
@@ -162,19 +164,26 @@ public class WeatherFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final JSONObject jsonObject = GetWeatherData.getData(city);
-                if(jsonObject == null){
+                while (updaterService == null) {
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                final Response<RequestWeather> response = updaterService.getWeather(city);
+                if (response == null) {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             alertWeatherDataIncorrect.show();
                         }
                     });
-                }else {
+                } else {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            showWeather(jsonObject);
+                            WeatherFragment.this.showWeather(response);
                         }
                     });
                 }
@@ -182,28 +191,19 @@ public class WeatherFragment extends Fragment {
         }).start();
     }
 
-    private void showWeather(JSONObject jsonObject) {
-        try {
-            JSONArray weather = jsonObject.getJSONArray("weather");
-            JSONObject main = jsonObject.getJSONObject("main");
-            JSONObject JSONwind = jsonObject.getJSONObject("wind");
-            JSONObject sys = jsonObject.getJSONObject("sys");
+    private void showWeather(Response<RequestWeather> response) {
+        String[] strArr = getData(response);
+        getPNG(response.body().getWeather().get(0).getIcon());
 
-            String[] strArr = getData(main, JSONwind, weather);
-            getPNG(weather);
-
-            sunriseView.setSunrise_Sunset(sys.getLong("sunrise"), sys.getLong("sunset"), jsonObject.getLong("dt"));
-            temperature.setText(strArr[0]);
-            pressure.setText(strArr[1]);
-            wind.setText(strArr[2]);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        sunriseView.setSunriseSunset(response.body().getSys().getSunrise(), response.body().getSys().getSunset(), response.body().getDt());
+        temperature.setText(strArr[0]);
+        pressure.setText(strArr[1]);
+        wind.setText(strArr[2]);
         loading.hide();
     }
 
-    private void getPNG(JSONArray weather) throws JSONException {
-        switch (weather.getJSONObject(0).getString("icon")){
+    private void getPNG(String string){
+        switch (string){
 
             case "01d":
             case "01n":
@@ -244,12 +244,29 @@ public class WeatherFragment extends Fragment {
         }
     }
 
-    private String[] getData(JSONObject main, JSONObject wind, JSONArray weather) throws JSONException {
-        String[] strArr = new String[3];
-        float temp = Float.parseFloat(main.getString("temp")) - 273.15f;
-        strArr[0] = format.format(temp) + "\u2103";
-        strArr[1] = main.getString("pressure") + " hpa";
-        strArr[2] = wind.getString("speed") + " m/s";
-        return strArr;
+    private String[] getData(Response<RequestWeather> response){
+
+        String temperatureStr = format.format(response.body().getMain().getTemp() - 275.15) + "\u2103";
+        String pressureStr = response.body().getMain().getPressure() + "hpa";
+        String windStr = response.body().getWind().getSpeed() + "m/s";
+
+        return new String[]{temperatureStr, pressureStr, windStr};
     }
+
+    private ServiceConnection updaterServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            updaterServiceBinder = (UpdaterService.ServiceBinder) iBinder;
+            if (updaterServiceBinder != null){
+                isBound = true;
+                updaterService = updaterServiceBinder.getService();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            isBound = false;
+            updaterServiceBinder = null;
+        }
+    };
 }

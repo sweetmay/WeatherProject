@@ -5,21 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.os.Build;
+
 import android.util.AttributeSet;
 import android.view.View;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-
-import java.time.Duration;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 
 public class SunriseView extends View {
 
@@ -44,7 +35,6 @@ public class SunriseView extends View {
     public SunriseView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
-
     }
 
     private void initView(){
@@ -58,13 +48,15 @@ public class SunriseView extends View {
         sunrisePaint.setStyle(Paint.Style.STROKE);
         sunrisePaint.setStrokeWidth(12f);
         sunrisePaint.setAntiAlias(true);
-        sun =  BitmapFactory.decodeResource(getResources(), R.drawable.sun1);
+        sun = BitmapFactory.decodeResource(getResources(), R.drawable.sun1);
     }
 
-    public void setSunrise_Sunset(long sunrise, long sunset, long dt){
+    public void setSunriseSunset(long sunrise, long sunset, long dt){
         long duration = sunset - sunrise;
         long timeSinceRise = dt - sunrise;
         percent = (float) timeSinceRise/duration;
+        calculateSunImgPos();
+        invalidate();
     }
 
     private boolean calculateSunImgPos(){
@@ -92,15 +84,10 @@ public class SunriseView extends View {
     @Override
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
-        if(!calculateSunImgPos()){
-            invalidate();
-        }else {
-            System.out.println(destVector[0] + " " + destVector[1]);
+        if(dst != null){
             canvas.drawArc(30, 25, 570, 575, -180, 180, false, placeHolderPaint);
             canvas.drawArc(30, 25, 570, 575, -180, (float) sweepAngle, false, sunrisePaint);
             canvas.drawBitmap(sun, null, dst, null);
         }
     }
-
-
 }

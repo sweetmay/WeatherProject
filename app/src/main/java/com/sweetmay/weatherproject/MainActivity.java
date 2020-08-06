@@ -17,6 +17,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
@@ -30,6 +31,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -102,11 +104,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 Location location = task.getResult();
-                if(location != null){
+                if (location != null) {
                     try {
-                        Geocoder geocoder = new Geocoder(getApplicationContext(),
+                        Geocoder geocoder = new Geocoder(MainActivity.this,
                                 Locale.getDefault());
-                        String city = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(),1).get(0).getLocality();
+                        String city = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1).get(0).getLocality();
                         forecast(city);
                     } catch (IOException e) {
                         navController.navigate(R.id.nav_city);
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 true, true));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void initViews() {
         initAlertDialog();
         toolbar = findViewById(R.id.toolbar);
@@ -131,15 +134,17 @@ public class MainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigation_view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void initAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.alert_permission_title);
         builder.setMessage(R.string.alert_permission_message);
         builder.setIcon(R.drawable.location_icon);
         builder.setPositiveButton(R.string.alert_button_accept, new DialogInterface.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) { requestLocationPermission(); }
+            public void onClick(DialogInterface dialogInterface, int i) {
+                MainActivity.this.requestLocationPermission();
+            }
         });
         builder.setNegativeButton(R.string.alert_button_dismiss, new DialogInterface.OnClickListener() {
             @Override
