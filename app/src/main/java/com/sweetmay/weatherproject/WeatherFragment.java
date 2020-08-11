@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -23,15 +24,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.otto.Subscribe;
+import com.sweetmay.weatherproject.bus.EventBus;
+import com.sweetmay.weatherproject.bus.OnErrorEvent;
 import com.sweetmay.weatherproject.requestweather.RequestWeather;
 
 import java.text.DecimalFormat;
 
-import retrofit2.Response;
 
-
-public class WeatherFragment extends Fragment {
+public class WeatherFragment extends Fragment{
     private final Handler handler = new Handler();
     private TextView city;
     private TextView wind;
@@ -46,15 +46,18 @@ public class WeatherFragment extends Fragment {
     private UpdaterService.ServiceBinder updaterServiceBinder;
     private UpdaterService updaterService;
     private boolean isBound = false;
+    private WeatherDAO db;
+    private WeatherIcon weatherIcon;
+
     public WeatherFragment() {
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
         EventBus.getBus().register(this);
         openCityInfo();
+        city.setText(MainPresenter.getInstance().getCity());
     }
 
     @Override
@@ -66,6 +69,10 @@ public class WeatherFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bindWeatherService();
+    }
+
+    private void bindWeatherService() {
         Intent intent = new Intent(getContext(), UpdaterService.class);
         getActivity().bindService(intent, updaterServiceConnection, Context.BIND_AUTO_CREATE);
     }
@@ -74,22 +81,7 @@ public class WeatherFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews();
-        showWeatherOnCreate();
     }
-
-    private void showWeatherOnCreate() {
-        if(MainPresenter.getInstance()!=null){
-            UpdateWeather(MainPresenter.getInstance().getCity());
-            if(MainPresenter.getInstance().isPressure()){
-                pressure.setVisibility(View.VISIBLE);
-            }
-            if(MainPresenter.getInstance().isWind()){
-                wind.setVisibility(View.VISIBLE);
-            }
-            city.setText(MainPresenter.getInstance().getCity());
-        }
-    }
-
 
 
     private void initViews() {
@@ -102,9 +94,11 @@ public class WeatherFragment extends Fragment {
         temperature = getView().findViewById(R.id.temperature);
         pressure = getView().findViewById(R.id.pressureView);
         cityInfo = getView().findViewById(R.id.goToWikiBtn);
-        wind.setVisibility(View.GONE);
-        pressure.setVisibility(View.GONE);
+        openCityInfo();
         initAlertDialog();
+
+        db = App.getInstance().getWeatherDataBase();
+        weatherIcon = new WeatherIcon(getContext());
     }
 
     private void initAlertDialog() {
@@ -145,34 +139,13 @@ public class WeatherFragment extends Fragment {
         return "https://en.wikipedia.org/wiki/" + url;
     }
 
-    @Subscribe
-    public void onForecastEvent(ForecastEvent event){
-        wind.setVisibility(View.GONE);
-        pressure.setVisibility(View.GONE);
-        if(event.isPressure()){
-            pressure.setVisibility(View.VISIBLE);
-        }
-        if(event.isWind()){
-            wind.setVisibility(View.VISIBLE);
-        }
-        city.setText(event.getCity());
-        UpdateWeather(event.getCity());
-}
-
     private void UpdateWeather(final String city) {
         loading.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (updaterService == null) {
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                final Response<RequestWeather> response = updaterService.getWeather(city);
-                if (response == null) {
+                final RequestWeather body = updaterService.getWeather(city);
+                if (body == null) {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -183,72 +156,50 @@ public class WeatherFragment extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            WeatherFragment.this.showWeather(response);
+                            WeatherFragment.this.showWeather(body);
                         }
                     });
+                    addToDataBase(body, city);
                 }
             }
         }).start();
     }
 
-    private void showWeather(Response<RequestWeather> response) {
-        String[] strArr = getData(response);
-        getPNG(response.body().getWeather().get(0).getIcon());
+    private void addToDataBase(RequestWeather body, String city) {
+        DBWeatherEntity dbWeatherEntity = new DBWeatherEntity(
+                body.getDt(),
+                city, body.getMain().getTemp(),
+                body.getWeather().get(0).getIcon(),
+                body.getMain().getPressure(),
+                body.getWind().getSpeed());
+        db.insertWeatherData(dbWeatherEntity);
+    }
 
-        sunriseView.setSunriseSunset(response.body().getSys().getSunrise(), response.body().getSys().getSunset(), response.body().getDt());
+    private void showWeather(RequestWeather body) {
+
+        String[] strArr = getData(body);
+        weatherEmoji.setImageDrawable(getPNG(body.getWeather().get(0).getIcon()));
+
+        sunriseView.setSunriseSunset(
+                body.getSys().getSunrise(),
+                body.getSys().getSunset(),
+                body.getDt());
+
         temperature.setText(strArr[0]);
         pressure.setText(strArr[1]);
         wind.setText(strArr[2]);
         loading.hide();
     }
 
-    private void getPNG(String string){
-        switch (string){
-
-            case "01d":
-            case "01n":
-                weatherEmoji.setImageResource(R.drawable.d1);
-                break;
-            case "02d" :
-            case "02n" :
-                weatherEmoji.setImageResource(R.drawable.d2);
-                break;
-            case "03d":
-            case "03n":
-                weatherEmoji.setImageResource(R.drawable.d3);
-                break;
-            case "04d":
-            case "04n":
-                weatherEmoji.setImageResource(R.drawable.d4);
-                break;
-            case "09d":
-            case "09n":
-                weatherEmoji.setImageResource(R.drawable.d9);
-                break;
-            case "10d":
-            case "10n":
-                weatherEmoji.setImageResource(R.drawable.d10);
-                break;
-            case "11d":
-            case "11n":
-                weatherEmoji.setImageResource(R.drawable.d11);
-                break;
-            case "13d":
-            case "13n":
-                weatherEmoji.setImageResource(R.drawable.d13);
-                break;
-            case "50d":
-            case "50n":
-                weatherEmoji.setImageResource(R.drawable.d50);
-                break;
-        }
+    private Drawable getPNG(String string){
+         return weatherIcon.getPNG(string);
     }
 
-    private String[] getData(Response<RequestWeather> response){
+    private String[] getData(RequestWeather response){
 
-        String temperatureStr = format.format(response.body().getMain().getTemp() - 275.15) + "\u2103";
-        String pressureStr = response.body().getMain().getPressure() + "hpa";
-        String windStr = response.body().getWind().getSpeed() + "m/s";
+        String temperatureStr = format.format(response.getMain().getTemp() - 273.15) + "\u2103";
+        String pressureStr = response.getMain().getPressure() + "hpa";
+        String windStr = response.getWind().getSpeed() + "m/s";
 
         return new String[]{temperatureStr, pressureStr, windStr};
     }
@@ -260,6 +211,7 @@ public class WeatherFragment extends Fragment {
             if (updaterServiceBinder != null){
                 isBound = true;
                 updaterService = updaterServiceBinder.getService();
+                UpdateWeather((String) city.getText());
             }
         }
 

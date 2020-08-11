@@ -17,7 +17,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
@@ -29,9 +28,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.otto.Subscribe;
+import com.sweetmay.weatherproject.bus.EventBus;
+import com.sweetmay.weatherproject.bus.ForecastEvent;
+import com.sweetmay.weatherproject.bus.OnErrorEvent;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLocation();
+
             }
         }
     }
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                         String city = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1).get(0).getLocality();
                         forecast(city);
                     } catch (IOException e) {
+
                         navController.navigate(R.id.nav_city);
                     }
                 }

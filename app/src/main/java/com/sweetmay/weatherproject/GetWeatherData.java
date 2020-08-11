@@ -1,22 +1,12 @@
 package com.sweetmay.weatherproject;
 
-import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.sweetmay.weatherproject.requestweather.OpenWeatherMap;
 import com.sweetmay.weatherproject.requestweather.RequestWeather;
 
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import retrofit2.Callback;
-import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

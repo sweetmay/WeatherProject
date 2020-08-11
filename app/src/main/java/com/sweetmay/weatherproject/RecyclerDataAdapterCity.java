@@ -1,21 +1,18 @@
 package com.sweetmay.weatherproject;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.AppOpsManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapter.ViewHolder> {
+public class RecyclerDataAdapterCity extends RecyclerView.Adapter<RecyclerDataAdapterCity.ViewHolder> {
     private String[] cities;
     private RVOnItemClick onItemClick;
 
-    public RecyclerDataAdapter(String[] cities, RVOnItemClick onItemClick){
+    public RecyclerDataAdapterCity(String[] cities, RVOnItemClick onItemClick){
         this.cities = cities;
         this.onItemClick = onItemClick;
     }

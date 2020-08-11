@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.sweetmay.weatherproject.bus.EventBus;
+import com.sweetmay.weatherproject.bus.ForecastEvent;
 
 import java.util.Objects;
 
@@ -24,7 +25,7 @@ public class CityChooseFragment extends Fragment implements RVOnItemClick{
     public static String cityKey;
     public static String pressureKey;
     public static String windKey;
-    private RecyclerDataAdapter adapter;
+    private RecyclerDataAdapterCity adapter;
     private TextInputLayout cityInputLayout;
     private TextInputEditText cityInput;
     private RecyclerView cities;
@@ -101,7 +102,7 @@ public class CityChooseFragment extends Fragment implements RVOnItemClick{
     private void setUpRV() {
         String[] strings = getResources().getStringArray(R.array.cities);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext());
-        adapter = new RecyclerDataAdapter(strings, this);
+        adapter = new RecyclerDataAdapterCity(strings, this);
         cities.setLayoutManager(layoutManager);
         cities.setAdapter(adapter);
     }
@@ -114,8 +115,6 @@ public class CityChooseFragment extends Fragment implements RVOnItemClick{
 
     private void onForecast(String text) {
         MainPresenter.getInstance().setCity(text);
-        MainPresenter.getInstance().setPressure(true);
-        MainPresenter.getInstance().setWind(true);
         cityInput.setText(MainPresenter.getInstance().getCity());
         EventBus.getBus().post(new ForecastEvent(cityInput.getText().toString(),
                 true, true));
