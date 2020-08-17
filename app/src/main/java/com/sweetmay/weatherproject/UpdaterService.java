@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
-import com.sweetmay.weatherproject.requestweather.RequestWeather;
+import com.sweetmay.weatherproject.requestWeather.RequestWeather;
 
 
 public class UpdaterService extends Service {

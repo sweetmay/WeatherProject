@@ -1,5 +1,5 @@
 
-package com.sweetmay.weatherproject.requestweather;
+package com.sweetmay.weatherproject.requestWeather;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

@@ -1,4 +1,4 @@
-package com.sweetmay.weatherproject.requestweather;
+package com.sweetmay.weatherproject.requestWeather;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

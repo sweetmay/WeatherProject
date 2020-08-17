@@ -1,8 +1,8 @@
 package com.sweetmay.weatherproject;
 
 
-import com.sweetmay.weatherproject.requestweather.OpenWeatherMap;
-import com.sweetmay.weatherproject.requestweather.RequestWeather;
+import com.sweetmay.weatherproject.requestWeather.OpenWeatherMap;
+import com.sweetmay.weatherproject.requestWeather.RequestWeather;
 
 
 import java.io.IOException;

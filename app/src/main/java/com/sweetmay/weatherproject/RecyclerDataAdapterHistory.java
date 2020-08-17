@@ -1,4 +1,4 @@
-package com.sweetmay.weatherproject.requestweather;
+package com.sweetmay.weatherproject;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,9 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
-import com.sweetmay.weatherproject.DBWeatherEntity;
-import com.sweetmay.weatherproject.R;
-import com.sweetmay.weatherproject.WeatherIcon;
 
 
 import java.sql.Date;
@@ -25,9 +22,11 @@ public class RecyclerDataAdapterHistory extends RecyclerView.Adapter<RecyclerDat
     private List<DBWeatherEntity> weatherEntityList;
     private WeatherIcon weatherIcon;
     private DecimalFormat format = new DecimalFormat("#.##");
-    private Date date;
+    private Settings settings;
+
     public RecyclerDataAdapterHistory(Context context){
         weatherIcon = new WeatherIcon(context);
+        settings = App.getInstance().getSettingsInstance();
     }
 
     @NonNull
@@ -39,13 +38,7 @@ public class RecyclerDataAdapterHistory extends RecyclerView.Adapter<RecyclerDat
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerDataAdapterHistory.ViewHolder holder, int position) {
-        DBWeatherEntity entity = weatherEntityList.get(position);
-        date = new Date(entity.getDate()*1000);
-        String temp = format.format((entity.getTemp() - 273.15)) +"\u2103";
-        holder.temperature.setText(temp);
-        holder.weatherIcon.setImageDrawable(weatherIcon.getPNG(entity.getIcon()));
-        holder.city.setText(entity.getCity());
-        holder.date.setText(date.toString());
+        holder.setData(position, weatherIcon);
     }
 
     @Override
@@ -75,7 +68,15 @@ public class RecyclerDataAdapterHistory extends RecyclerView.Adapter<RecyclerDat
             city = itemView.findViewById(R.id.city_history);
             temperature = itemView.findViewById(R.id.temperature_history);
             date = itemView.findViewById(R.id.date_history);
-
+        }
+        private void setData(int position, WeatherIcon weatherPng){
+            DBWeatherEntity entity = weatherEntityList.get(position);
+            Date convertedDate = new Date(entity.getDate() * 1000);
+            String temp = settings.getTemp(entity.getTemp());
+            temperature.setText(temp);
+            weatherIcon.setImageDrawable(weatherPng.getPNG(entity.getIcon()));
+            city.setText(entity.getCity());
+            date.setText(convertedDate.toString());
         }
     }
 }

@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.sweetmay.weatherproject.requestweather.RecyclerDataAdapterHistory;
 
 import java.util.Collections;
 import java.util.List;
@@ -52,6 +51,17 @@ public class SearchHistory extends Fragment{
     private void initViews() {
         uiHandler = new Handler();
         searchInput = getView().findViewById(R.id.search_input);
+        onSearchTextChange();
+        rv = getView().findViewById(R.id.history_RV);
+        adapterHistory = new RecyclerDataAdapterHistory(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext());
+        this.rv.setLayoutManager(layoutManager);
+        this.rv.setAdapter(adapterHistory);
+        getAllHistory();
+
+    }
+
+    private void onSearchTextChange() {
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -68,13 +78,6 @@ public class SearchHistory extends Fragment{
 
             }
         });
-        rv = getView().findViewById(R.id.history_RV);
-        adapterHistory = new RecyclerDataAdapterHistory(getContext());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext());
-        this.rv.setLayoutManager(layoutManager);
-        this.rv.setAdapter(adapterHistory);
-        getAllHistory();
-
     }
 
     private void initDBThread() {

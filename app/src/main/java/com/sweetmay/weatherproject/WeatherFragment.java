@@ -26,7 +26,7 @@ import android.widget.TextView;
 
 import com.sweetmay.weatherproject.bus.EventBus;
 import com.sweetmay.weatherproject.bus.OnErrorEvent;
-import com.sweetmay.weatherproject.requestweather.RequestWeather;
+import com.sweetmay.weatherproject.requestWeather.RequestWeather;
 
 import java.text.DecimalFormat;
 
@@ -48,6 +48,7 @@ public class WeatherFragment extends Fragment{
     private boolean isBound = false;
     private WeatherDAO db;
     private WeatherIcon weatherIcon;
+    private Settings settings;
 
     public WeatherFragment() {
     }
@@ -83,7 +84,6 @@ public class WeatherFragment extends Fragment{
         initViews();
     }
 
-
     private void initViews() {
         loading = getView().findViewById(R.id.loading);
         sunriseView = getView().findViewById(R.id.sunriseView);
@@ -99,6 +99,7 @@ public class WeatherFragment extends Fragment{
 
         db = App.getInstance().getWeatherDataBase();
         weatherIcon = new WeatherIcon(getContext());
+        settings = App.getInstance().getSettingsInstance();
     }
 
     private void initAlertDialog() {
@@ -197,7 +198,7 @@ public class WeatherFragment extends Fragment{
 
     private String[] getData(RequestWeather response){
 
-        String temperatureStr = format.format(response.getMain().getTemp() - 273.15) + "\u2103";
+        String temperatureStr = settings.getTemp(response.getMain().getTemp());
         String pressureStr = response.getMain().getPressure() + "hpa";
         String windStr = response.getWind().getSpeed() + "m/s";
 
