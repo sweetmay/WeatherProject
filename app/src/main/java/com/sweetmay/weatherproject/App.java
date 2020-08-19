@@ -12,6 +12,8 @@ public class App extends Application {
 
     private WeatherDataBase weatherDataBase;
 
+    private WeatherDAO weatherDAO;
+
     private Settings settings;
 
     public static App getInstance(){
@@ -30,6 +32,7 @@ public class App extends Application {
                 build();
 
         settings = new Settings(getApplicationContext());
+        weatherDAO = weatherDataBase.getWeatherDAO();
     }
 
     public Settings getSettingsInstance(){
@@ -38,7 +41,7 @@ public class App extends Application {
 
     public WeatherDAO getWeatherDataBase(){
         synchronized (synchObj){
-            return weatherDataBase.getWeatherDAO();
+            return weatherDAO;
         }
     }
 }

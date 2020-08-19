@@ -24,6 +24,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -109,16 +110,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 Location location = task.getResult();
+                Handler uiHandler = new Handler();
                 if (location != null) {
-                    try {
-                        Geocoder geocoder = new Geocoder(MainActivity.this,
-                                Locale.getDefault());
-                        String city = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1).get(0).getLocality();
-                        forecast(city);
-                    } catch (IOException e) {
-
-                        navController.navigate(R.id.nav_city);
-                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                            Geocoder geocoder = new Geocoder(MainActivity.this,
+                                    Locale.getDefault());
+                            String city = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1).get(0).getLocality();
+                            uiHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    forecast(city);
+                                }
+                            });
+                            } catch (IOException e) {
+                                uiHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        navController.navigate(R.id.nav_city);;
+                                    }
+                                });
+                            }
+                        }
+                    }).start();
                 }
             }
         });
