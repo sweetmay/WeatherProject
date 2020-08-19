@@ -1,5 +1,5 @@
 
-package com.sweetmay.weatherproject.requestweather;
+package com.sweetmay.weatherproject.requestWeather;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

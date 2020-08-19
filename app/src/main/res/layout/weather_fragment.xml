@@ -10,8 +10,8 @@
 
     <com.sweetmay.weatherproject.SunriseView
         android:id="@+id/sunriseView"
-        android:layout_width="262dp"
-        android:layout_height="223dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_marginTop="28dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,12 +32,12 @@
         android:id="@+id/cityViewFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
+        android:paddingTop="165dp"
         android:text="@string/select_a_city_in_the_list"
         android:textAlignment="center"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/sunriseView" />
 
     <TextView
         android:id="@+id/pressureView"

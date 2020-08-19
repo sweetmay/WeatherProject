@@ -1,6 +1,6 @@
 package com.sweetmay.weatherproject;
 
-class MainPresenter {
+public class MainPresenter {
     private static MainPresenter instance = null;
 
     private static final Object synchObj = new Object();
@@ -16,31 +16,31 @@ class MainPresenter {
     }
 
 
-    String getCity() {
+    public String getCity() {
         return city;
     }
 
-    void setCity(String city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
-    boolean isWind() {
+    public boolean isWind() {
         return wind;
     }
 
-    void setWind(boolean wind) {
+    public void setWind(boolean wind) {
         this.wind = wind;
     }
 
-    boolean isPressure() {
+    public boolean isPressure() {
         return pressure;
     }
 
-    void setPressure(boolean pressure) {
+    public void setPressure(boolean pressure) {
         this.pressure = pressure;
     }
 
-    static MainPresenter getInstance(){
+    public static MainPresenter getInstance(){
         synchronized (synchObj){
             if (instance == null){
                 instance = new MainPresenter();

@@ -1,4 +1,4 @@
-package com.sweetmay.weatherproject;
+package com.sweetmay.weatherproject.bus;
 
 import com.squareup.otto.Bus;
 

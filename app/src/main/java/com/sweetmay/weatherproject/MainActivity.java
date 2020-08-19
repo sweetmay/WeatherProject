@@ -15,13 +15,16 @@ import androidx.navigation.ui.NavigationUI;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -29,9 +32,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.otto.Subscribe;
+import com.sweetmay.weatherproject.bus.EventBus;
+import com.sweetmay.weatherproject.bus.ForecastEvent;
+import com.sweetmay.weatherproject.bus.OnErrorEvent;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -94,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLocation();
+
             }
         }
     }
@@ -104,15 +110,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 Location location = task.getResult();
+                Handler uiHandler = new Handler();
                 if (location != null) {
-                    try {
-                        Geocoder geocoder = new Geocoder(MainActivity.this,
-                                Locale.getDefault());
-                        String city = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1).get(0).getLocality();
-                        forecast(city);
-                    } catch (IOException e) {
-                        navController.navigate(R.id.nav_city);
-                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                            Geocoder geocoder = new Geocoder(MainActivity.this,
+                                    Locale.getDefault());
+                            String city = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1).get(0).getLocality();
+                            uiHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    forecast(city);
+                                }
+                            });
+                            } catch (IOException e) {
+                                uiHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        navController.navigate(R.id.nav_city);;
+                                    }
+                                });
+                            }
+                        }
+                    }).start();
                 }
             }
         });
@@ -132,7 +154,18 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
+        initNotificationChannel();
     }
+
+    private void initNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel("2", "name", importance);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initAlertDialog() {

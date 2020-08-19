@@ -9,8 +9,7 @@
         android:id="@+id/nav_city"
         android:name="com.sweetmay.weatherproject.CityChooseFragment"
         android:label="@string/city_menu"
-        tools:layout="@layout/city_choose_fragment">
-    </fragment>
+        tools:layout="@layout/city_choose_fragment"/>
 
     <fragment
         android:id="@+id/nav_weather"
@@ -23,5 +22,12 @@
         android:name="com.sweetmay.weatherproject.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/settings_fragment"/>
+
+    <fragment
+        android:name="com.sweetmay.weatherproject.SearchHistory"
+        android:id="@+id/nav_search_history"
+        android:label="@string/search_history"
+        tools:layout="@layout/search_history_fragment"/>
+
 
 </navigation>

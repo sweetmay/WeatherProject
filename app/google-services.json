@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "87400547878",
+    "firebase_url": "https://weatherproject-c4617.firebaseio.com",
+    "project_id": "weatherproject-c4617",
+    "storage_bucket": "weatherproject-c4617.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87400547878:android:a5c873db330cf3f8ba48e7",
+        "android_client_info": {
+          "package_name": "com.sweetmay.weatherproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "87400547878-6u5vlc1c4jvm9p4mrne3u9qb051j8lce.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXjxAja97xgskM_z56SwhZ--WTCMVFHPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "87400547878-6u5vlc1c4jvm9p4mrne3u9qb051j8lce.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

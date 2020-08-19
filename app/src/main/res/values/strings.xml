@@ -23,6 +23,14 @@
     <string name="alert_permission_message">The app requires your location data to show weather, however you can choose your location manually</string>
     <string name="alert_button_accept">Accept</string>
     <string name="alert_button_dismiss">Choose manually</string>
+    <string name="search_history">Search history</string>
+    <string name="search_by_city">Search by city</string>
+    <string name="temperature_format">Temperature Format</string>
+    <string name="celsius">celsius</string>
+    <string name="fahrenheit">fahrenheit</string>
+    <string name="kelvin">kelvin</string>
+    <string name="preferences_name">settings</string>
+    <string name="temperature_key_preferences">temp_type</string>
 
     <string-array name="cities">
         <item>Moscow</item>

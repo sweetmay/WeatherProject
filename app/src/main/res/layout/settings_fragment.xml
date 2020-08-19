@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/temp_format"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:paddingTop="48dp"
+        android:text="@string/temperature_format"
+        app:layout_constraintTop_toTopOf="parent">
+    </TextView>
+
+    <RadioGroup
+        android:id="@+id/settings_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/temp_format">
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/button_celcius"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/celsius"
+            />
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/button_fahrenheit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/fahrenheit"
+            />
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/button_kelvin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/kelvin"
+            />
+    </RadioGroup>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
